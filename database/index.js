@@ -7,8 +7,8 @@ const connection = mysql.createConnection({
   database: 'carcentives',
 });
 
-const selectAll = (callback) => {
-  connection.query('SELECT * FROM items', (err, results) => {
+const retrieveMakes = (callback) => {
+  connection.query('SELECT DISTINCT make from makesAndModels', (err, results) => {
     if (err) {
       callback(err, null);
     } else {
@@ -17,4 +17,17 @@ const selectAll = (callback) => {
   });
 };
 
-module.exports.selectAll = selectAll;
+const retrieveModels = (selectedMake, callback) => {
+  console.log("selectedMake", selectedMake);
+  connection.query(`SELECT models from makesAndModels where make='${selectedMake}'`, (err, results) => {
+    if (err) {
+      callback(err, null);
+    } else {
+      callback(null, results);
+    }
+  });
+};
+
+module.exports = {
+  retrieveMakes, retrieveModels,
+};
