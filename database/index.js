@@ -1,15 +1,15 @@
-var mysql = require('mysql');
+const mysql = require('mysql');
 
-var connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : 'FILL_ME_IN',
-  database : 'test'
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'carcentives',
 });
 
-var selectAll = function(callback) {
-  connection.query('SELECT * FROM items', function(err, results, fields) {
-    if(err) {
+const retrieveMakes = (callback) => {
+  connection.query('SELECT DISTINCT make from makesAndModels', (err, results) => {
+    if (err) {
       callback(err, null);
     } else {
       callback(null, results);
@@ -17,4 +17,17 @@ var selectAll = function(callback) {
   });
 };
 
-module.exports.selectAll = selectAll;
+const retrieveModels = (selectedMake, callback) => {
+  console.log("selectedMake", selectedMake);
+  connection.query(`SELECT models from makesAndModels where make='${selectedMake}'`, (err, results) => {
+    if (err) {
+      callback(err, null);
+    } else {
+      callback(null, results);
+    }
+  });
+};
+
+module.exports = {
+  retrieveMakes, retrieveModels,
+};

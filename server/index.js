@@ -1,7 +1,8 @@
+/* eslint-disable no-console */
 const express = require('express');
 const bodyParser = require('body-parser');
 // UNCOMMENT THE DATABASE YOU'D LIKE TO USE
-const items = require('../database');
+const db = require('../database');
 // const items = require('../database-mongo');
 
 const app = express();
@@ -10,11 +11,26 @@ app.use(express.static(`${__dirname}/../client/dist`));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/items', (req, res) => {
-  items.selectAll((err, data) => {
+app.get('/makes', (req, res) => {
+  db.retrieveMakes((err, data) => {
     if (err) {
+      console.log('Error querying makes.');
       res.sendStatus(500);
     } else {
+      console.log('Car makes queried successfully.');
+      res.json(data);
+    }
+  });
+});
+
+app.get('/models', (req, res) => {
+  console.log('server', req.query.selectedMake)
+  db.retrieveModels(req.query.selectedMake, (err, data) => {
+    if (err) {
+      console.log('Error querying models.');
+      res.sendStatus(500);
+    } else {
+      console.log('Car models queried successfully.');
       res.json(data);
     }
   });
