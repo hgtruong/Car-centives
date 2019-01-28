@@ -18,7 +18,6 @@ const retrieveMakes = (callback) => {
 };
 
 const retrieveModels = (selectedMake, callback) => {
-  console.log("selectedMake", selectedMake);
   connection.query(`SELECT models from makesAndModels where make='${selectedMake}'`, (err, results) => {
     if (err) {
       callback(err, null);
@@ -28,6 +27,16 @@ const retrieveModels = (selectedMake, callback) => {
   });
 };
 
+const addUserSubmission = (userInput, callback) => {
+  connection.query(`INSERT INTO userInputs(make, model, zipCode) VALUES('${userInput.make}','${userInput.model}', ${userInput.zipCode}); `, (err, results) => {
+    if (err) {
+      callback(err, null);
+    } else {
+      callback(null, results);
+    }
+  });
+};
+
 module.exports = {
-  retrieveMakes, retrieveModels,
+  retrieveMakes, retrieveModels, addUserSubmission,
 };

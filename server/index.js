@@ -24,7 +24,6 @@ app.get('/makes', (req, res) => {
 });
 
 app.get('/models', (req, res) => {
-  console.log('server', req.query.selectedMake)
   db.retrieveModels(req.query.selectedMake, (err, data) => {
     if (err) {
       console.log('Error querying models.');
@@ -32,6 +31,18 @@ app.get('/models', (req, res) => {
     } else {
       console.log('Car models queried successfully.');
       res.json(data);
+    }
+  });
+});
+
+app.post('/userSubmit', (req, res) => {
+  db.addUserSubmission(req.body, (err) => {
+    if (err) {
+      console.log('Error adding user submission.');
+      res.sendStatus(500);
+    } else {
+      console.log('User submission added to database.');
+      res.sendStatus(200);
     }
   });
 });

@@ -49,7 +49,7 @@ class CarMakeSelection extends React.Component {
 
   handleZipCodeChange(event) {
     // TODO: Validate zip code
-    this.setState({ [event.target.name]: event.target.value }, () => {
+    this.setState({ [event.target.name]: Number(event.target.value) }, () => {
       console.log('zip code', this.state.zipCode);
     });
   }
@@ -57,16 +57,27 @@ class CarMakeSelection extends React.Component {
   // eslint-disable-next-line class-methods-use-this
   handleSubmit(event) {
     event.preventDefault();
-    console.log('make', this.state.selectedMake);
-    console.log('selectedModel', this.state.selectedModel);
-    console.log('zipCode', this.state.zipCode);
-    console.log(this.state.selectedModel === '');
-    if ((this.state.selectedMake || this.state.selectedModel || this.state.zipCode) === '') {
+    if (this.state.selectedMake === '' || this.state.selectedModel === '' || this.state.zipCode === '') {
       // eslint-disable-next-line no-alert
       // eslint-disable-next-line no-undef
       alert('Please fill out all field!');
     } else {
       // call post request to submit user input to db
+      axios({
+        method: 'POST',
+        url: '/userSubmit',
+        data: {
+          make: this.state.selectedMake,
+          model: this.state.selectedModel,
+          zipCode: this.state.zipCode,
+        },
+      })
+        .then(() => {
+          console.log('User submission added.');
+        })
+        .catch(() => {
+          console.log('User submission not added.');
+        });
     }
   }
 
