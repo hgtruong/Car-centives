@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable max-len */
 /* eslint-disable no-console */
 const axios = require('axios');
@@ -48,7 +49,6 @@ class CarMakeSelection extends React.Component {
   }
 
   handleZipCodeChange(event) {
-    // TODO: Validate zip code
     this.setState({ [event.target.name]: Number(event.target.value) }, () => {
       console.log('zip code', this.state.zipCode);
     });
@@ -57,10 +57,13 @@ class CarMakeSelection extends React.Component {
   // eslint-disable-next-line class-methods-use-this
   handleSubmit(event) {
     event.preventDefault();
+    const isValidZip = /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(this.state.zipCode);
     if (this.state.selectedMake === '' || this.state.selectedModel === '' || this.state.zipCode === '') {
       // eslint-disable-next-line no-alert
       // eslint-disable-next-line no-undef
       alert('Please fill out all field!');
+    } else if (!isValidZip) {
+      alert('Please enter a valid zip code!');
     } else {
       // call post request to submit user input to db
       axios({
