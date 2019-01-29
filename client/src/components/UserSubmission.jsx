@@ -17,6 +17,7 @@ class UserSubmission extends React.Component {
       model: '',
       zipCode: '',
       screenShotUrl: '',
+      screenShotDiv: '',
     };
     this.handleClick = this.handleClick.bind(this);
   }
@@ -39,6 +40,8 @@ class UserSubmission extends React.Component {
       make: this.props.make,
       model: this.props.model,
       zipCode: this.props.zipCode,
+      screenShotDiv: '',
+      screenShotUrl: '',
     }, () => {
       axios({
         method: 'POST',
@@ -50,24 +53,40 @@ class UserSubmission extends React.Component {
           finalUrl: this.state.finalURL,
         },
       })
-        .then(() => {
-          console.log('inside');
+        .then((result) => {
+          this.setState({ screenShotUrl: result.data.filePath }, () => {
+            console.log('new url', this.state.screenShotUrl);
+          });
         })
         .catch(() => {
+          console.log('Error in screenshot');
         });
     });
+  }
+
+  renderScreenShot() {
   }
 
   // eslint-disable-next-line class-methods-use-this
   render() {
     return (
-      <div id='individualCar'>
-        <button className="link" name={this.props.name} onClick={this.handleClick}>
-        {this.props.make} {this.props.model} {this.props.zipCode}
-        </button>
-        <br></br>
-        <a href={this.state.finalURL} target="_blank"> Manufacturer's Site </a>
+      <div id="userSubmissionAndScreenShots">
+        <div id='individualCar'>
+          <button className="link" name={this.props.name} onClick={this.handleClick}>
+          {this.props.make} {this.props.model} {this.props.zipCode}
+          </button>
+          <br></br>
+          <a href={this.state.finalURL} target="_blank"> Manufacturer's Site </a>
+
+          <div id="screenShots" >
+            <img src={`${this.state.screenShotUrl}`} />
+          </div>
+        </div>
+
+
       </div>
+
+
     );
   }
 }

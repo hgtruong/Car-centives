@@ -41,6 +41,7 @@ INSERT INTO makesAndModels(make, models) VALUES('Honda', 'CR-V');
 INSERT INTO makesAndModels(make, models) VALUES('Honda', 'Odyssey');
 INSERT INTO makesAndModels(make, models) VALUES('Honda', 'Fit');
 INSERT INTO makesAndModels(make, models) VALUES('Honda', 'HR-V');
+INSERT INTO makesAndModels(make, models) VALUES('Honda', 'Insight');
 INSERT INTO makesAndModels(make, models) VALUES('Honda', 'Civic Coupe');
 INSERT INTO makesAndModels(make, models) VALUES('Honda', 'Civic Hatchback');
 INSERT INTO makesAndModels(make, models) VALUES('Honda', 'Pilot');

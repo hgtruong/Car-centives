@@ -11,10 +11,6 @@ app.use(express.static(`${__dirname}/../client/dist`));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// async function timeout(ms) {
-//   return new Promise(resolve => setTimeout(resolve, ms));
-// }
-
 app.get('/makes', (req, res) => {
   db.getMakes((err, data) => {
     if (err) {
@@ -28,19 +24,18 @@ app.get('/makes', (req, res) => {
 });
 
 app.post('/screenshot', (req, res) => {
+  console.log('Screenshot request received.');
   const fileName = `${req.body.make}${req.body.model}${req.body.zipCode}`.split(' ').join('');
 
   puppeteer.launch().then(async (browser) => {
-    console.log(__dirname);
     const page = await browser.newPage();
     await page.goto(`${req.body.finalUrl}`, { waitUntil: 'networkidle0' });
     await page.waitFor(2000);
     await page.screenshot({
-      path: `${__dirname}/../screenshots/${fileName}.png`,
+      path: `${__dirname}/../client/dist/screenshots/${fileName}.png`,
       clip: { x: 0, y: 0, width: 800, height: 2500 },
     });
-    await browser.close();
-    res.sendStatus(200);
+    await browser.close().then(() => { res.json({ filePath: `/screenshots/${fileName}.png` }); });
   });
 });
 

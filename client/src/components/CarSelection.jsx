@@ -140,14 +140,9 @@ class CarMakeSelection extends React.Component {
 
           </form>
 
-        <div id='userSubmissionAndScreenShots'>
           <div id='userSubmission'>
             {this.state.UserSubmission.map((element, key) => <UserSubmission make={element.make} model={element.model} zipCode={element.zipCode} key={element.id} />)}
           </div>
-
-          <div id='screenShots'> screenshot
-          </div>
-        </div>
 
       </div>
     );
