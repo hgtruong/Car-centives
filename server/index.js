@@ -1,9 +1,9 @@
+/* eslint-disable object-curly-newline */
 /* eslint-disable no-console */
 const express = require('express');
+const puppeteer = require('puppeteer');
 const bodyParser = require('body-parser');
-// UNCOMMENT THE DATABASE YOU'D LIKE TO USE
 const db = require('../database');
-// const items = require('../database-mongo');
 
 const app = express();
 
@@ -11,8 +11,12 @@ app.use(express.static(`${__dirname}/../client/dist`));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// async function timeout(ms) {
+//   return new Promise(resolve => setTimeout(resolve, ms));
+// }
+
 app.get('/makes', (req, res) => {
-  db.retrieveMakes((err, data) => {
+  db.getMakes((err, data) => {
     if (err) {
       console.log('Error querying makes.');
       res.sendStatus(500);
@@ -23,8 +27,25 @@ app.get('/makes', (req, res) => {
   });
 });
 
+app.post('/screenshot', (req, res) => {
+  const fileName = `${req.body.make}${req.body.model}${req.body.zipCode}`.split(' ').join('');
+
+  puppeteer.launch().then(async (browser) => {
+    console.log(__dirname);
+    const page = await browser.newPage();
+    await page.goto(`${req.body.finalUrl}`, { waitUntil: 'networkidle0' });
+    await page.waitFor(2000);
+    await page.screenshot({
+      path: `${__dirname}/../screenshots/${fileName}.png`,
+      clip: { x: 0, y: 0, width: 800, height: 2500 },
+    });
+    await browser.close();
+    res.sendStatus(200);
+  });
+});
+
 app.get('/models', (req, res) => {
-  db.retrieveModels(req.query.selectedMake, (err, data) => {
+  db.getModels(req.query.selectedMake, (err, data) => {
     if (err) {
       console.log('Error querying models.');
       res.sendStatus(500);
@@ -43,6 +64,18 @@ app.post('/userSubmit', (req, res) => {
     } else {
       console.log('User submission added to database.');
       res.sendStatus(200);
+    }
+  });
+});
+
+app.get('/userSubmit', (req, res) => {
+  db.getUserSubmission(req.body, (err, result) => {
+    if (err) {
+      console.log('Error getting user submissions.');
+      res.sendStatus(500);
+    } else {
+      console.log('User submissions queried successfully.');
+      res.json(result);
     }
   });
 });

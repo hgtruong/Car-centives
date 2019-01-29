@@ -7,8 +7,8 @@ const connection = mysql.createConnection({
   database: 'carcentives',
 });
 
-const retrieveMakes = (callback) => {
-  connection.query('SELECT DISTINCT make from makesAndModels', (err, results) => {
+const getMakes = (callback) => {
+  connection.query('SELECT DISTINCT make from makesAndModels;', (err, results) => {
     if (err) {
       callback(err, null);
     } else {
@@ -17,8 +17,8 @@ const retrieveMakes = (callback) => {
   });
 };
 
-const retrieveModels = (selectedMake, callback) => {
-  connection.query(`SELECT models from makesAndModels where make='${selectedMake}'`, (err, results) => {
+const getModels = (selectedMake, callback) => {
+  connection.query(`SELECT models from makesAndModels where make='${selectedMake}';`, (err, results) => {
     if (err) {
       callback(err, null);
     } else {
@@ -37,6 +37,16 @@ const addUserSubmission = (userInput, callback) => {
   });
 };
 
+const getUserSubmission = (userInput, callback) => {
+  connection.query('select * from userInputs;', (err, results) => {
+    if (err) {
+      callback(err, null);
+    } else {
+      callback(null, results);
+    }
+  });
+};
+
 module.exports = {
-  retrieveMakes, retrieveModels, addUserSubmission,
+  getMakes, getModels, addUserSubmission, getUserSubmission,
 };

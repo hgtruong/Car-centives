@@ -1,8 +1,9 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 import React from 'react';
 import ReactDOM from 'react-dom';
-// eslint-disable-next-line no-unused-vars
-import CarMakeSelection from './components/CarMakeSelection.jsx';
+import CarSelection from './components/CarSelection.jsx';
+import UserSubmission from './components/UserSubmission.jsx';
 
 const axios = require('axios');
 
@@ -18,11 +19,11 @@ class App extends React.Component {
 
   // eslint-disable-next-line class-methods-use-this
   componentDidMount() {
-    this.retrieveMakes();
+    this.getMakes();
   }
 
   // eslint-disable-next-line class-methods-use-this
-  retrieveMakes() {
+  getMakes() {
     axios({
       method: 'GET',
       url: '/makes',
@@ -39,8 +40,10 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <h1 id="welcome">Welcome</h1>
-        <CarMakeSelection makes={this.state.makes}/>
+        <h1 id="welcome">Welcome to Carcentives</h1>
+        <div id='carSelection'>
+          <CarSelection makes={this.state.makes}/>
+        </div>
       </div>
     );
   }
