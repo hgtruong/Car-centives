@@ -1,9 +1,7 @@
 /* eslint-disable no-console */
 const express = require('express');
 const bodyParser = require('body-parser');
-// UNCOMMENT THE DATABASE YOU'D LIKE TO USE
 const db = require('../database');
-// const items = require('../database-mongo');
 
 const app = express();
 

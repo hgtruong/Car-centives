@@ -2,9 +2,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 // eslint-disable-next-line no-unused-vars
-import CarMakeSelection from './components/CarMakeSelection.jsx';
+import { CarMakeSelection } from './components/CarMakeSelection.jsx';
 
-const axios = require('axios');
+import axios from "axios";
+
 
 // eslint-disable-next-line no-unused-vars
 class App extends React.Component {
