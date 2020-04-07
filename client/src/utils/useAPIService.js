@@ -12,7 +12,7 @@ function useAPIService() {
     setError(false);
   }
 
-  const serviceCall = async (url, method, payLoad) => {
+  const serviceCall = async (url, method, params, payLoad) => {
     init();
     setIsLoading(true);
 
@@ -20,6 +20,8 @@ function useAPIService() {
       const result = await axios({
         method: `${method}`,
         url: `${url}`,
+        params: params,
+        data: payLoad
       });
       setData(result.data);
     } catch (error) {
