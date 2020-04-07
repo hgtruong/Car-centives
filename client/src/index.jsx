@@ -8,23 +8,13 @@ import axios from "axios";
 
 
 // eslint-disable-next-line no-unused-vars
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      makes: [],
-      models: [],
-    };
-  }
-
-  render() {
+const App = function() {
     return (
       <div>
         <h1 id="welcome">Welcome</h1>
         <CarMakeSelection />
       </div>
     );
-  }
 }
 
 // eslint-disable-next-line no-undef
