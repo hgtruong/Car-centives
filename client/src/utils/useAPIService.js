@@ -1,3 +1,6 @@
+import { useState } from 'react';
+import axios from 'axios';
+
 function useAPIService() {
   const [data, setData]  = useState([]);
   const [isLoading, setIsLoading]  = useState(false);
@@ -21,6 +24,7 @@ function useAPIService() {
       setData(result.data);
     } catch (error) {
       console.log(`Error with ${method} API call for url: ${url}`);
+      console.log(`Error is: ${error}`)
       setError(true);
     }
     setIsLoading(false);
