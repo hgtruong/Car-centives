@@ -1,0 +1,32 @@
+function useAPIService() {
+  const [data, setData]  = useState([]);
+  const [isLoading, setIsLoading]  = useState(false);
+  const [error, setError]  = useState(false);
+
+  function init() {
+    setData([]);
+    setIsLoading(false);
+    setError(false);
+  }
+
+  const serviceCall = async (url, method, payLoad) => {
+    init();
+    setIsLoading(true);
+
+    try {
+      const result = await axios({
+        method: `${method}`,
+        url: `${url}`,
+      });
+      setData(result.data);
+    } catch (error) {
+      console.log(`Error with ${method} API call for url: ${url}`);
+      setError(true);
+    }
+    setIsLoading(false);
+  }
+
+  return [{ data, isLoading, error}, serviceCall ];
+}
+
+export { useAPIService };
