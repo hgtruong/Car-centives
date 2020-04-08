@@ -10,6 +10,7 @@ import {
   TextField
 } from '@material-ui/core';
 import { useAPIService } from '../utils/useAPIService';
+import { DialogSpinner } from '../utils/dialogSpinner.jsx';
 
 function CarMakeSelection(props) {
   const classes = useStyles();
@@ -17,31 +18,39 @@ function CarMakeSelection(props) {
   const [model, updateModel] = useFormInput('');
   const [zipCode, updateZipCode] = useFormInput('');
   const [isValid, updateIsValid] = useFormInput(false);
+  const [dialogOpen, setDialogOpen] = useState(true);
+  const [dialogMessage, setDialogMessage] = useState("Setting up");
 
-  const [makes, makesAPICall] = useAPIService();
-  const [models, modelsAPICall] = useAPIService();
-  const [zipService, zipCodeAPICall] = useAPIService();
+  const [makeService, makeServiceAPICall] = useAPIService();
+  const [modelService, modelServiceAPICall] = useAPIService();
+  const [zipService, zipServiceAPICall] = useAPIService();
 
   // Makes API Call
   useEffect(() => {
-    makesAPICall('/makes', 'GET', {}, {});
+    setDialogMessage(`Retrieving makes`);
+    makeServiceAPICall('/makes', 'GET', {}, {});
   }, []);
 
   // Models API Call
   useEffect(() => {
-    updateModel("");
-    let params = {
-      selectedMake: make.value
+    if(make.value !== "") {
+      updateModel("");
+      let params = {
+        selectedMake: make.value
+      }
+      setDialogMessage(`Retrieving models for ${make.value}`);
+      modelServiceAPICall('/models', 'GET', params, {});
     }
-    modelsAPICall('/models', 'GET', params, {});
   }, [make.value]);
 
+  // Zip Validation
   useEffect(() => {
     if(zipCode.value.length === 5 && !isNaN(zipCode.value)) {
       let params = {
         zipCode: zipCode.value
       }
-      zipCodeAPICall('/validateZip', 'GET', params, {});
+      setDialogMessage(`Validating Zip Code`);
+      zipServiceAPICall('/validateZip', 'GET', params, {});
     } 
     updateIsValid(false);
   }, [zipCode.value]);
@@ -52,10 +61,24 @@ function CarMakeSelection(props) {
     } else {
       updateIsValid(false);
     }
-  }, [zipService.data])
+  }, [zipService.data]);
+
+  useEffect(() => {
+    if( makeService.isLoading === true ||
+        modelService.isLoading === true ||
+        zipService.isLoading === true
+      ) {
+        setDialogOpen(true);
+      } else {
+        setDialogOpen(false);
+      }
+  }, [makeService.isLoading, modelService.isLoading, zipService.isLoading]);
 
   return (
-    <div>
+    <div className="car-make-selection">
+
+      <DialogSpinner dialogOpen={dialogOpen} message={dialogMessage}/>
+
       <FormControl className={classes.formControl}>
         <InputLabel id="makeLabel">
           Make
@@ -64,10 +87,9 @@ function CarMakeSelection(props) {
           <MenuItem value=""> 
             <em> None </em> 
           </MenuItem>
-          {makes.data.map((currentMake, key) => <MenuItem value={currentMake.make} key={key}>{ currentMake.make }</MenuItem>)}
+          {makeService.data.map((currentMake, key) => <MenuItem value={currentMake.make} key={key}>{ currentMake.make }</MenuItem>)}
         </Select>
       </FormControl>
-
       <FormControl className={classes.formControl}>
         <InputLabel id="modelLabel">
           Model
@@ -76,7 +98,7 @@ function CarMakeSelection(props) {
           <MenuItem value=""> 
             <em> None </em> 
           </MenuItem>
-          {models.data.map((currentModel, key) => <MenuItem value={currentModel.models} key={key}>{ currentModel.models }</MenuItem>)}
+          {modelService.data.map((currentModel, key) => <MenuItem value={currentModel.models} key={key}>{ currentModel.models }</MenuItem>)}
         </Select>
       </FormControl>
       <FormControl className={classes.formControl} noValidate autoComplete="on">
@@ -111,10 +133,7 @@ const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
     minWidth: 120,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
+  }
 }));
 
 export { CarMakeSelection };
