@@ -18,8 +18,8 @@ function useAPIService() {
 
     try {
       const result = await axios({
-        method: `${method}`,
         url: `${url}`,
+        method: `${method}`,
         params: params,
         data: payLoad
       });

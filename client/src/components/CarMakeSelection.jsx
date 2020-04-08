@@ -15,12 +15,16 @@ function CarMakeSelection(props) {
   const classes = useStyles();
   const [make, updateMake] = useFormInput('');
   const [model, updateModel] = useFormInput('');
-  let [makes, makesAPICall] = useAPIService();
-  let [models, modelsAPICall] = useAPIService();
+  const [zipCode, updateZipCode] = useFormInput('');
+  const [isValid, updateIsValid] = useFormInput(false);
+
+  const [makes, makesAPICall] = useAPIService();
+  const [models, modelsAPICall] = useAPIService();
+  const [zipService, zipCodeAPICall] = useAPIService();
 
   // Makes API Call
   useEffect(() => {
-    makesAPICall('makes', 'GET', {}, {});
+    makesAPICall('/makes', 'GET', {}, {});
   }, []);
 
   // Models API Call
@@ -29,9 +33,26 @@ function CarMakeSelection(props) {
     let params = {
       selectedMake: make.value
     }
-    modelsAPICall('models', 'GET', params, {});
+    modelsAPICall('/models', 'GET', params, {});
   }, [make.value]);
 
+  useEffect(() => {
+    if(zipCode.value.length === 5 && !isNaN(zipCode.value)) {
+      let params = {
+        zipCode: zipCode.value
+      }
+      zipCodeAPICall('/validateZip', 'GET', params, {});
+    } 
+    updateIsValid(false);
+  }, [zipCode.value]);
+
+  useEffect(() => {
+    if(zipService.data.City && zipService.data.State ) {
+      updateIsValid(true);
+    } else {
+      updateIsValid(false);
+    }
+  }, [zipService.data])
 
   return (
     <div>
@@ -58,6 +79,16 @@ function CarMakeSelection(props) {
           {models.data.map((currentModel, key) => <MenuItem value={currentModel.models} key={key}>{ currentModel.models }</MenuItem>)}
         </Select>
       </FormControl>
+      <FormControl className={classes.formControl} noValidate autoComplete="on">
+        <TextField
+          error={!isValid.value || zipCode.value.length < 5}
+          onChange={zipCode.onChange}
+          helperText={isValid.value ? "" : "Invalid Zip Code"}
+          required id="standard-error" 
+          label="Zip Code"
+          inputProps={{maxLength: 5}}
+        />
+      </FormControl>
     </div>
   );
 }
@@ -73,7 +104,7 @@ function useFormInput(initialValue) {
     setValue(newValue);
   }
 
-  return [{value,onChange: handleChange}, updateValue];
+  return [{value, onChange: handleChange}, updateValue];
 }
 
 const useStyles = makeStyles((theme) => ({

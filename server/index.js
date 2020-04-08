@@ -2,6 +2,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const db = require('../database');
+const APIKey = require('../config');
+const axios = require('axios');
+const parseString = require('xml2js').parseString;
 
 const app = express();
 
@@ -31,6 +34,35 @@ app.get('/models', (req, res) => {
       res.json(data);
     }
   });
+});
+
+app.get('/validateZip', async (req, res) => {
+  let url = `https://secure.shippingapis.com/ShippingAPI.dll?API=CityStateLookup&XML=`;
+  try {
+    const result = await axios({
+      method: 'GET', 
+      url:
+      `
+        ${url}
+        <CityStateLookupRequest USERID="${APIKey.USPS_USER_ID}">
+          <ZipCode ID='0'>
+            <Zip5>${req.query.zipCode}</Zip5>
+          </ZipCode>
+        </CityStateLookupRequest>
+      `
+    });
+    parseString(result.data, (err, result) => {
+      if(err) {
+        console.log('Error parsing Zip Code Lookup response');
+        res.sendStatus(500);
+      } else {
+        res.json(result.CityStateLookupResponse.ZipCode[0]);
+      }
+    });
+  } catch(error) {
+    console.log('Error with zip code validation.');
+    console.log(`Error is ${error}`)
+  }
 });
 
 app.post('/userSubmit', (req, res) => {
