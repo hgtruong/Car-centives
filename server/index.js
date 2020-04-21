@@ -56,6 +56,7 @@ app.get('/validateZip', async (req, res) => {
         console.log('Error parsing Zip Code Lookup response');
         res.sendStatus(500);
       } else {
+        console.log('Zip code validation successful.')
         res.json(result.CityStateLookupResponse.ZipCode[0]);
       }
     });

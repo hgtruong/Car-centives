@@ -7,7 +7,8 @@ import {
   MenuItem, 
   FormControl, 
   makeStyles,
-  TextField
+  TextField,
+  Button
 } from '@material-ui/core';
 import { useAPIService } from '../utils/useAPIService';
 import { DialogSpinner } from '../utils/dialogSpinner.jsx';
@@ -20,6 +21,7 @@ function CarMakeSelection(props) {
   const [isValid, updateIsValid] = useFormInput(false);
   const [dialogOpen, setDialogOpen] = useState(true);
   const [dialogMessage, setDialogMessage] = useState("Setting up");
+  const [isDisable, setIsDisable] = useState(true);
 
   const [makeService, makeServiceAPICall] = useAPIService();
   const [modelService, modelServiceAPICall] = useAPIService();
@@ -74,43 +76,63 @@ function CarMakeSelection(props) {
       }
   }, [makeService.isLoading, modelService.isLoading, zipService.isLoading]);
 
+  useEffect(() => {
+    if(isValid.value && zipCode.value.length === 5 && make.value.length > 0 && model.value.length > 0) {
+      setIsDisable(false);
+    } else {
+      setIsDisable(true);
+    }
+  }, [zipCode.value, isValid.value, make.value, model.value]);
+
   return (
     <div className="car-make-selection">
 
       <DialogSpinner dialogOpen={dialogOpen} message={dialogMessage}/>
 
-      <FormControl className={classes.formControl}>
-        <InputLabel id="makeLabel">
-          Make
-        </InputLabel>
-        <Select {...make}>
-          <MenuItem value=""> 
-            <em> None </em> 
-          </MenuItem>
-          {makeService.data.map((currentMake, key) => <MenuItem value={currentMake.make} key={key}>{ currentMake.make }</MenuItem>)}
-        </Select>
-      </FormControl>
-      <FormControl className={classes.formControl}>
-        <InputLabel id="modelLabel">
-          Model
-        </InputLabel>
-        <Select {...model}>
-          <MenuItem value=""> 
-            <em> None </em> 
-          </MenuItem>
-          {modelService.data.map((currentModel, key) => <MenuItem value={currentModel.models} key={key}>{ currentModel.models }</MenuItem>)}
-        </Select>
-      </FormControl>
-      <FormControl className={classes.formControl} noValidate autoComplete="on">
-        <TextField
-          error={!isValid.value || zipCode.value.length < 5}
-          onChange={zipCode.onChange}
-          helperText={isValid.value ? "" : "Invalid Zip Code"}
-          required id="standard-error" 
-          label="Zip Code"
-          inputProps={{maxLength: 5}}
-        />
-      </FormControl>
+      <div className="make-model-zip-form">
+        <FormControl className={classes.formControl}>
+          <InputLabel id="makeLabel">
+            Make
+          </InputLabel>
+          <Select {...make}>
+            <MenuItem value="">
+              <em> None </em>
+            </MenuItem>
+            {makeService.data.map((currentMake, key) => <MenuItem value={currentMake.make} key={key}>{ currentMake.make }</MenuItem>)}
+          </Select>
+        </FormControl>
+        <FormControl className={classes.formControl}>
+          <InputLabel id="modelLabel">
+            Model
+          </InputLabel>
+          <Select {...model}>
+            <MenuItem value="">
+              <em> None </em>
+            </MenuItem>
+            {modelService.data.map((currentModel, key) => <MenuItem value={currentModel.models} key={key}>{ currentModel.models }</MenuItem>)}
+          </Select>
+        </FormControl>
+        <FormControl className={classes.formControl}>
+          <TextField
+            error={!isValid.value || zipCode.value.length < 5}
+            onChange={zipCode.onChange}
+            helperText={isValid.value ? "" : "Invalid Zip Code"}
+            required id="standard-error"
+            label="Zip Code"
+            inputProps={{maxLength: 5}}
+          />
+        </FormControl>
+      </div>
+
+      <div className={classes.buttonContainer}>
+        <Button
+          className={classes.button}
+          disabled={isDisable}
+          color="primary"
+          variant="contained"
+          >Submit
+        </Button>
+      </div>
     </div>
   );
 }
@@ -132,7 +154,16 @@ function useFormInput(initialValue) {
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 120,
+    minWidth: 200
+  },
+  buttonContainer: {
+    '& > *': {
+      margin: theme.spacing(2),
+    },
+    textAlign: "center",
+  },
+  button: {
+    size: "large"
   }
 }));
 
