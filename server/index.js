@@ -1,9 +1,10 @@
 /* eslint-disable no-console */
 const express = require('express');
 const bodyParser = require('body-parser');
-// UNCOMMENT THE DATABASE YOU'D LIKE TO USE
 const db = require('../database');
-// const items = require('../database-mongo');
+const APIKey = require('../config');
+const axios = require('axios');
+const parseString = require('xml2js').parseString;
 
 const app = express();
 
@@ -29,10 +30,40 @@ app.get('/models', (req, res) => {
       console.log('Error querying models.');
       res.sendStatus(500);
     } else {
-      console.log('Car models queried successfully.');
+      console.log(`Car models for "${req.query.selectedMake}" queried successfully.`);
       res.json(data);
     }
   });
+});
+
+app.get('/validateZip', async (req, res) => {
+  let url = `https://secure.shippingapis.com/ShippingAPI.dll?API=CityStateLookup&XML=`;
+  try {
+    const result = await axios({
+      method: 'GET', 
+      url:
+      `
+        ${url}
+        <CityStateLookupRequest USERID="${APIKey.USPS_USER_ID}">
+          <ZipCode ID='0'>
+            <Zip5>${req.query.zipCode}</Zip5>
+          </ZipCode>
+        </CityStateLookupRequest>
+      `
+    });
+    parseString(result.data, (err, result) => {
+      if(err) {
+        console.log('Error parsing Zip Code Lookup response');
+        res.sendStatus(500);
+      } else {
+        console.log(`Zip code: ${req.query.zipCode} validation successful.`);
+        res.json(result.CityStateLookupResponse.ZipCode[0]);
+      }
+    });
+  } catch(error) {
+    console.log('Error with zip code validation.');
+    console.log(`Error is ${error}`)
+  }
 });
 
 app.post('/userSubmit', (req, res) => {
