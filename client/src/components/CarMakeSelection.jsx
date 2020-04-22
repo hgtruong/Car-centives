@@ -89,7 +89,7 @@ function CarMakeSelection(props) {
 
       <DialogSpinner dialogOpen={dialogOpen} message={dialogMessage}/>
 
-      <div className="make-model-zip-form">
+      <div className="make-model-zip-form" className={classes.formContainer}>
         <FormControl className={classes.formControl}>
           <InputLabel id="makeLabel">
             Make
@@ -152,6 +152,9 @@ function useFormInput(initialValue) {
 }
 
 const useStyles = makeStyles((theme) => ({
+  formContainer: {
+    textAlign: "center"
+  },
   formControl: {
     margin: theme.spacing(1),
     minWidth: 200
