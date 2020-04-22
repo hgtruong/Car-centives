@@ -30,7 +30,7 @@ app.get('/models', (req, res) => {
       console.log('Error querying models.');
       res.sendStatus(500);
     } else {
-      console.log('Car models queried successfully.');
+      console.log(`Car models for "${req.query.selectedMake}" queried successfully.`);
       res.json(data);
     }
   });
@@ -56,7 +56,7 @@ app.get('/validateZip', async (req, res) => {
         console.log('Error parsing Zip Code Lookup response');
         res.sendStatus(500);
       } else {
-        console.log('Zip code validation successful.')
+        console.log(`Zip code: ${req.query.zipCode} validation successful.`);
         res.json(result.CityStateLookupResponse.ZipCode[0]);
       }
     });
