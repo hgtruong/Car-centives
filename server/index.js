@@ -5,6 +5,7 @@ const db = require('../database');
 const APIKey = require('../config');
 const axios = require('axios');
 const parseString = require('xml2js').parseString;
+const puppeteer = require('puppeteer');
 
 const app = express();
 
@@ -66,16 +67,29 @@ app.get('/validateZip', async (req, res) => {
   }
 });
 
-app.post('/userSubmit', (req, res) => {
-  db.addUserSubmission(req.body, (err) => {
-    if (err) {
-      console.log('Error adding user submission.');
-      res.sendStatus(500);
-    } else {
-      console.log('User submission added to database.');
-      res.sendStatus(200);
-    }
-  });
+app.post('/carSubmission', (req, res) => {
+  // db.addUserSubmission(req.body, (err) => {
+  //   if (err) {
+  //     console.log('Error adding user submission.');
+  //     res.sendStatus(500);
+  //   } else {
+  //     console.log('User submission added to database.');
+  //     res.sendStatus(200);
+  //   }
+  // });
+
+  // https://automobiles.honda.com/tools/current-offers?zipcode=95148&vehiclemodelseries=civic-sedan
+
+  (async () => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.goto(`https://automobiles.honda.com/tools/current-offers?zipcode=${req.body.zipCode}&vehiclemodelseries=${req.body.model}`);
+    await page.screenshot({path: `example.png`});
+
+    await browser.close;
+    res.sendStatus(200);
+  })();
+
 });
 
 app.listen(3000, () => {

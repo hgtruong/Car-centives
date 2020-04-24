@@ -24,8 +24,9 @@ function CarMakeSelection(props) {
   const [isDisable, setIsDisable] = useState(true);
 
   const [makeService, makeServiceAPICall] = useAPIService();
-  const [modelService, modelServiceAPICall] = useAPIService();
+  const [modelService, modelServiceAPICall, modelSetData] = useAPIService();
   const [zipService, zipServiceAPICall] = useAPIService();
+  const [carSubmissionService, carSubmmissionServiceAPICall] = useAPIService();
 
   // Makes API Call
   useEffect(() => {
@@ -42,6 +43,9 @@ function CarMakeSelection(props) {
       }
       setDialogMessage(`Retrieving models for ${make.value}`);
       modelServiceAPICall('/models', 'GET', params, {});
+    } else if(make.value === "") {
+      updateModel("");
+      modelSetData([]);
     }
   }, [make.value]);
 
@@ -74,7 +78,7 @@ function CarMakeSelection(props) {
       } else {
         setDialogOpen(false);
       }
-  }, [makeService.isLoading, modelService.isLoading, zipService.isLoading]);
+  }, [makeService.isLoading, modelService.isLoading, zipService.isLoading, carSubmmissionService.isLoading]);
 
   useEffect(() => {
     if(isValid.value && zipCode.value.length === 5 && make.value.length > 0 && model.value.length > 0) {
@@ -83,6 +87,16 @@ function CarMakeSelection(props) {
       setIsDisable(true);
     }
   }, [zipCode.value, isValid.value, make.value, model.value]);
+
+  function handleCarSubmit() {
+    let params = {
+      make: make.value,
+      model: model.value,
+      zipCode: zipCode.value
+    }
+    console.log(`params in car submission are: ${params}`)
+    carSubmmissionServiceAPICall('/carSubmission', 'POST', params, {});
+  }
 
   return (
     <div className="car-make-selection">
@@ -130,6 +144,7 @@ function CarMakeSelection(props) {
           disabled={isDisable}
           color="primary"
           variant="contained"
+          onClick={handleCarSubmit}
           >Submit
         </Button>
       </div>
