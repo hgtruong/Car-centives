@@ -32,7 +32,7 @@ function useAPIService() {
     setIsLoading(false);
   }
 
-  return [{ data, isLoading, error}, serviceCall ];
+  return [{ data, isLoading, error}, serviceCall, setData];
 }
 
 export { useAPIService };
