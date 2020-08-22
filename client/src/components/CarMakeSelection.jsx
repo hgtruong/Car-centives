@@ -78,7 +78,7 @@ function CarMakeSelection(props) {
       } else {
         setDialogOpen(false);
       }
-  }, [makeService.isLoading, modelService.isLoading, zipService.isLoading, carSubmmissionService.isLoading]);
+  }, [makeService.isLoading, modelService.isLoading, zipService.isLoading, carSubmissionService.isLoading]);
 
   useEffect(() => {
     if(isValid.value && zipCode.value.length === 5 && make.value.length > 0 && model.value.length > 0) {
@@ -94,7 +94,6 @@ function CarMakeSelection(props) {
       model: model.value,
       zipCode: zipCode.value
     }
-    console.log(`params in car submission are: ${params}`)
     carSubmmissionServiceAPICall('/carSubmission', 'POST', params, {});
   }
 
