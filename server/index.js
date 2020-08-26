@@ -6,6 +6,7 @@ const APIKey = require('../config');
 const axios = require('axios');
 const parseString = require('xml2js').parseString;
 const puppeteer = require('puppeteer');
+const preparePageForTests = require('./preparePageForTests')
 
 const app = express();
 
@@ -77,19 +78,44 @@ app.post('/carSubmission', (req, res) => {
   //     res.sendStatus(200);
   //   }
   // });
+  
+  (async (carInfo) => {
+    try{
 
-  // https://automobiles.honda.com/tools/current-offers?zipcode=95148&vehiclemodelseries=civic-sedan
 
-  (async () => {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.goto(`https://automobiles.honda.com/tools/current-offers?zipcode=${req.body.zipCode}&vehiclemodelseries=${req.body.model}`);
-    await page.screenshot({path: `example.png`});
+      let currYear = new Date().getFullYear();
 
-    await browser.close;
-    res.sendStatus(200);
-  })();
+      const browser = await puppeteer.launch({
+        args: ['--no-sandbox'],
+        headless: true
+      });
 
+      const page = await browser.newPage();
+      await preparePageForTests(page);
+      await page.setViewport({ width: 850, height: 1400});
+
+      let url = `https://www.edmunds.com/${carInfo.make}/${carInfo.model}/${currYear}/deals/`
+      await page.goto(url, {waitUntil: 'networkidle2'});
+
+      let selector = '.size-16.text-gray-darker.pl-2.search-by-zip-input.size-16.form-control-sm.form-control'
+      await page.waitForSelector(selector, {visible: true, timeout: 3000 });
+
+      // Setting Zipcode
+      await page.$eval(selector, (el, zipCode) => {
+        el.value = zipCode;
+      }, carInfo.zipCode);
+      await page.keyboard.press('Enter');
+
+      // Clicking incentives tab
+      await page.click(`div[name="incentives-financing"]`);
+      await page.screenshot({path: `example.png`});
+      await browser.close();
+  
+      res.sendStatus(200);
+    } catch(error) {
+      console.log(`Error with puppetter. ${error}`);
+    }
+  })({make: req.query.make, model: req.query.model, zipCode: req.query.zipCode});
 });
 
 app.listen(3000, () => {
