@@ -68,23 +68,11 @@ app.get('/validateZip', async (req, res) => {
 });
 
 app.post('/carSubmission', (req, res) => {
-  // db.addUserSubmission(req.body, (err) => {
-  //   if (err) {
-  //     console.log('Error adding user submission.');
-  //     res.sendStatus(500);
-  //   } else {
-  //     console.log('User submission added to database.');
-  //     res.sendStatus(200);
-  //   }
-  // });
-  
   (async ({make, model, zipCode}) => {
     try{
-      console.log('query', req.query)
-      console.log(`Getting incentives for ${make}-${model}-${zipCode}`);
+      console.log(`Starting incentives retrieval for ${make}-${model}-${zipCode}`);
 
       let currYear = new Date().getFullYear();
-
       const browser = await puppeteer.launch({
         args: ['--no-sandbox'],
         headless: true
@@ -108,7 +96,7 @@ app.post('/carSubmission', (req, res) => {
 
       // Clicking incentives tab
       await page.click(`div[name="incentives-financing"]`);
-      await page.screenshot({path: `server/screenshots/${make}-${model}-${zipCode}.png`, type: 'png'});
+      await page.screenshot({path: `${make}-${model}-${zipCode}.png`, type: 'png'});
       await browser.close();
       
       console.log(`Retrieved incentives for ${make}-${model}-${zipCode}`);
