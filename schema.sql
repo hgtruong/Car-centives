@@ -34,18 +34,14 @@ CREATE TABLE userInputs (
 -- INSERT INTO makes(make) VALUES('Honda');
 -- INSERT INTO makes(make) VALUES('Land Rover');
 
-INSERT INTO makesAndModels(make, models) VALUES('Honda', 'Clarity Plug-In Hybrid');
-INSERT INTO makesAndModels(make, models) VALUES('Honda', 'Accord Sedan');
-INSERT INTO makesAndModels(make, models) VALUES('Honda', 'Civic Sedan');
+INSERT INTO makesAndModels(make, models) VALUES('Honda', 'Clarity');
+INSERT INTO makesAndModels(make, models) VALUES('Honda', 'Accord');
+INSERT INTO makesAndModels(make, models) VALUES('Honda', 'Civic');
 INSERT INTO makesAndModels(make, models) VALUES('Honda', 'CR-V');
 INSERT INTO makesAndModels(make, models) VALUES('Honda', 'Odyssey');
 INSERT INTO makesAndModels(make, models) VALUES('Honda', 'Fit');
 INSERT INTO makesAndModels(make, models) VALUES('Honda', 'HR-V');
-INSERT INTO makesAndModels(make, models) VALUES('Honda', 'Civic Coupe');
-INSERT INTO makesAndModels(make, models) VALUES('Honda', 'Civic Hatchback');
 INSERT INTO makesAndModels(make, models) VALUES('Honda', 'Pilot');
-INSERT INTO makesAndModels(make, models) VALUES('Honda', 'Civic Si Sedan');
-INSERT INTO makesAndModels(make, models) VALUES('Honda', 'Civic Si Coupe');
 
 INSERT INTO makesAndModels(make, models) VALUES('Land Rover', 'Range Rover');
 INSERT INTO makesAndModels(make, models) VALUES('Land Rover', 'Range Rover Sport');
