@@ -1,14 +1,25 @@
-DROP DATABASE IF EXISTS carcentives;
+-- DROP DATABASE IF EXISTS carcentives;
 
-CREATE DATABASE carcentives;
+-- CREATE DATABASE carcentives;
 
-USE carcentives;
+-- USE carcentives;
 
+-- CREATE TABLE makesAndModels (
+--   id int NOT NULL AUTO_INCREMENT,
+--   make varchar(50),
+--   models varchar(50),
+--   PRIMARY KEY (id)
+-- );
+
+
+-- POSTGRES:
+-- \c carcentives;
+
+-- psql -h [**Host Name**] -U [**User Name**] [**database Name**]
 CREATE TABLE makesAndModels (
-  id int NOT NULL AUTO_INCREMENT,
+  id SERIAL PRIMARY KEY,
   make varchar(50),
-  models varchar(50),
-  PRIMARY KEY (id)
+  models varchar(50)
 );
 
 -- CREATE TABLE models (
@@ -19,20 +30,18 @@ CREATE TABLE makesAndModels (
 --   FOREIGN KEY (makeId) REFERENCES makes(make)
 -- );
 
-CREATE TABLE userInputs (
-  id int NOT NULL AUTO_INCREMENT,
-  make varchar(50) NOT NULL,
-  model varchar(50) NOT NULL,
-  zipCode int NOT NULL,
-  PRIMARY KEY (ID)
-);
+-- CREATE TABLE userInputs (
+--   id int NOT NULL AUTO_INCREMENT,
+--   make varchar(50) NOT NULL,
+--   model varchar(50) NOT NULL,
+--   zipCode int NOT NULL,
+--   PRIMARY KEY (ID)
+-- );
 
 /*  Execute this file from the command line by typing:
  *    mysql -u root < schema.sql
  *  to create the database and the tables.*/
 
--- INSERT INTO makes(make) VALUES('Honda');
--- INSERT INTO makes(make) VALUES('Land Rover');
 
 INSERT INTO makesAndModels(make, models) VALUES('Honda', 'Clarity');
 INSERT INTO makesAndModels(make, models) VALUES('Honda', 'Accord');
