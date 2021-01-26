@@ -3,4 +3,4 @@ const cars = {
     "Honda": ["Clarity", "Accord", "Civic", "CR-V", "Odyssey", "Fit", "HR-V", "Pilot"],
 }
 
-export default cars;
+module.exports = cars;

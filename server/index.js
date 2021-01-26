@@ -7,7 +7,7 @@ const axios = require('axios');
 const parseString = require('xml2js').parseString;
 const puppeteer = require('puppeteer');
 const preparePageForTests = require('./preparePageForTests')
-
+const Cars = require('./CarList');
 const app = express();
 
 app.use(express.static(`${__dirname}/../client/dist`));
@@ -15,18 +15,19 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/makes', (req, res) => {
-  db.retrieveMakes((err, data) => {
-    if (err) {
-      console.log('Error querying makes.');
-      res.sendStatus(500);
-    } else {
-      console.log('Car makes queried successfully.');
-      res.status(200).json(data);
-    }
-  });
+  const requestedMake = req.query.requestedMake;
+
+  if(Cars[requestedMake] !== undefined) {
+    console.log('Car makes queried successfully.');
+    res.status(200).json(Cars[requestedMake]);
+  } else {
+    console.log('Error querying makes.');
+    res.sendStatus(500);
+  }
 });
 
 app.get('/models', (req, res) => {
+  console.log("model", req.query.selectedMake);
   db.retrieveModels(req.query.selectedMake, (err, data) => {
     if (err) {
       console.log('Error querying models.');
