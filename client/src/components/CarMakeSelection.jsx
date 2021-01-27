@@ -111,7 +111,7 @@ function CarMakeSelection(props) {
             <MenuItem value="">
               <em> None </em>
             </MenuItem>
-            {makeService.data.map((currentMake, key) => <MenuItem value={currentMake.make} key={key}>{ currentMake.make }</MenuItem>)}
+            {makeService.data.map((currentMake, index) => <MenuItem value={currentMake} key={index}>{ currentMake }</MenuItem>)}
           </Select>
         </FormControl>
         <FormControl className={classes.formControl}>
@@ -122,7 +122,7 @@ function CarMakeSelection(props) {
             <MenuItem value="">
               <em> None </em>
             </MenuItem>
-            {modelService.data.map((currentModel, key) => <MenuItem value={currentModel.models} key={key}>{ currentModel.models }</MenuItem>)}
+            {modelService.data.map((currentModel, index) => <MenuItem value={currentModel} key={index}>{ currentModel }</MenuItem>)}
           </Select>
         </FormControl>
         <FormControl className={classes.formControl}>
