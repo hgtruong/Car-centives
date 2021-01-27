@@ -15,11 +15,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/makes', (req, res) => {
-  const requestedMake = req.query.requestedMake;
 
-  if(Cars[requestedMake] !== undefined) {
+  if(Cars !== undefined) {
     console.log('Car makes queried successfully.');
-    res.status(200).json(Cars[requestedMake]);
+    res.status(200).json(Object.keys(Cars));
   } else {
     console.log('Error querying makes.');
     res.sendStatus(500);
@@ -27,16 +26,15 @@ app.get('/makes', (req, res) => {
 });
 
 app.get('/models', (req, res) => {
-  console.log("model", req.query.selectedMake);
-  db.retrieveModels(req.query.selectedMake, (err, data) => {
-    if (err) {
-      console.log('Error querying models.');
-      res.sendStatus(500);
-    } else {
-      console.log(`Car models for "${req.query.selectedMake}" queried successfully.`);
-      res.status(200).json(data);
-    }
-  });
+  const selectedMake = req.query.selectedMake;
+
+  if(Cars[selectedMake] !== undefined) {
+    console.log('Car models retrieved.');
+    res.status(200).json(Cars[selectedMake]);
+  } else {
+    console.log(`Car models for "${selectedMake}" failed.`);
+    res.sendStatus(500);
+  }
 });
 
 app.get('/validateZip', async (req, res) => {
