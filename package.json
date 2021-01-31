@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "react-dev": "webpack -d --watch",
-    "server": "nodemon server/index.js",
+    "start": "webpack -d --watch",
     "test": "jest --watch"
   },
   "author": "Huy Truong",
